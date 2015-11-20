@@ -568,11 +568,11 @@ private:
         }
 
 
-        Matrix<double> dcenters(new double[branching*veclen_],branching,veclen_);
+        Matrix<ElementType> dcenters(new ElementType[branching*veclen_],branching,veclen_);
         for (int i=0; i<centers_length; ++i) {
             ElementType* vec = points_[centers_idx[i]];
             for (size_t k=0; k<veclen_; ++k) {
-                dcenters[i][k] = double(vec[k]);
+                dcenters[i][k] = ElementType(vec[k]);
             }
         }
 
@@ -606,12 +606,12 @@ private:
 
             // compute the new cluster centers
             for (int i=0; i<branching; ++i) {
-                memset(dcenters[i],0,sizeof(double)*veclen_);
+                memset(dcenters[i],0,sizeof(ElementType)*veclen_);
                 radiuses[i] = 0;
             }
             for (int i=0; i<indices_length; ++i) {
                 ElementType* vec = points_[indices[i]];
-                double* center = dcenters[belongs_to[i]];
+                ElementType* center = dcenters[belongs_to[i]];
                 for (size_t k=0; k<veclen_; ++k) {
                     center[k] += vec[k];
                 }
