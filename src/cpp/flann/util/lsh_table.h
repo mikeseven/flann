@@ -161,7 +161,7 @@ public:
     void add(unsigned int value, const ElementType* feature)
     {
         // Add the value to the corresponding bucket
-        BucketKey key = getKey(feature);
+        BucketKey key = (BucketKey) getKey(feature);
 
         switch (speed_level_) {
         case kArray:
@@ -192,7 +192,7 @@ public:
 #endif
         // Add the features to the table
         for (size_t i = 0; i < features.size(); ++i) {
-        	add(features[i].first, features[i].second);
+        	add((unsigned int)features[i].first, features[i].second);
         }
         // Now that the table is full, optimize it for speed/space
         optimize();
@@ -259,7 +259,7 @@ private:
     void initialize(size_t key_size)
     {
         speed_level_ = kHash;
-        key_size_ = key_size;
+        key_size_ = (unsigned int) key_size;
     }
 
     /** Optimize the table for speed/space
@@ -443,7 +443,7 @@ inline LshStats LshTable<unsigned char>::getStats() const
 
     if (!buckets_speed_.empty()) {
         for (BucketsSpeed::const_iterator pbucket = buckets_speed_.begin(); pbucket != buckets_speed_.end(); ++pbucket) {
-            stats.bucket_sizes_.push_back(pbucket->size());
+            stats.bucket_sizes_.push_back((int)pbucket->size());
             stats.bucket_size_mean_ += pbucket->size();
         }
         stats.bucket_size_mean_ /= buckets_speed_.size();
@@ -451,7 +451,7 @@ inline LshStats LshTable<unsigned char>::getStats() const
     }
     else {
         for (BucketsSpace::const_iterator x = buckets_space_.begin(); x != buckets_space_.end(); ++x) {
-            stats.bucket_sizes_.push_back(x->second.size());
+            stats.bucket_sizes_.push_back((int)x->second.size());
             stats.bucket_size_mean_ += x->second.size();
         }
         stats.bucket_size_mean_ /= buckets_space_.size();

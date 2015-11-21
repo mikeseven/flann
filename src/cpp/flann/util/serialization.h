@@ -423,7 +423,7 @@ class SaveArchive : public OutputArchive<SaveArchive>
         
             // Do the compression for the block
             compSz = LZ4_compress_HC_continue(
-                lz4Stream, buffer_+headSz, compressed_buffer_+headSz, offset_-headSz,
+                lz4Stream, buffer_+headSz, compressed_buffer_+headSz, (int)(offset_-headSz),
                 LZ4_COMPRESSBOUND(BLOCK_BYTES));
             
             if(compSz <= 0) {
@@ -441,7 +441,7 @@ class SaveArchive : public OutputArchive<SaveArchive>
             
             // Do the compression for the block
             compSz = LZ4_compress_HC_continue(
-                lz4Stream, buffer_, compressed_buffer_+headSz, offset_,
+                lz4Stream, buffer_, compressed_buffer_+headSz, (int) offset_,
                 LZ4_COMPRESSBOUND(BLOCK_BYTES));
             
             if(compSz <= 0) {
@@ -573,7 +573,7 @@ class LoadArchive : public InputArchive<LoadArchive>
         size_t pos = ftell(stream);
         fseek(stream, 0, SEEK_END);
         size_t fileSize = ftell(stream)-pos;
-        fseek(stream, pos, SEEK_SET);
+        fseek(stream, (long)pos, SEEK_SET);
         size_t headSz = sizeof(IndexHeaderStruct);
 
         // Read the (compressed) file to a buffer
@@ -609,8 +609,8 @@ class LoadArchive : public InputArchive<LoadArchive>
         // Extract body
         size_t usedSz = LZ4_decompress_safe(compBuffer+headSz,
                                             buffer_+headSz,
-                                            compressedSz,
-                                            uncompressedSz);
+                                            (int) compressedSz,
+                                            (int) uncompressedSz);
         
         // Check if the decompression was the expected size.
         if (usedSz != uncompressedSz) {
@@ -624,7 +624,7 @@ class LoadArchive : public InputArchive<LoadArchive>
         
         // Put the file pointer at the end of the data we've read
         if (compressedSz+headSz+pos != fileSize)
-            fseek(stream, compressedSz+headSz+pos, SEEK_SET);
+            fseek(stream, (long)(compressedSz+headSz+pos), SEEK_SET);
         block_sz_ = uncompressedSz+headSz;
     }
     
@@ -649,7 +649,7 @@ class LoadArchive : public InputArchive<LoadArchive>
         // Backward compatability
         if (head->signature[13] == '1' && head->signature[15] == '0') {
             free(head);
-            fseek(stream, pos, SEEK_SET);
+            fseek(stream, (long) pos, SEEK_SET);
             return decompressAndLoadV10(stream);
         }
         
@@ -687,7 +687,7 @@ class LoadArchive : public InputArchive<LoadArchive>
         
         // Decompress into the regular buffer
         const int decBytes = LZ4_decompress_safe_continue(
-            lz4StreamDecode, compressed_buffer_, buffer_, compSz, BLOCK_BYTES);
+            lz4StreamDecode, compressed_buffer_, buffer_, (int) compSz, BLOCK_BYTES);
         if(decBytes <= 0) {
             throw FLANNException("Invalid index file, cannot decompress block");
         }

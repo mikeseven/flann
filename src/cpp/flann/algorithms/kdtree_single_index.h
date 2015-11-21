@@ -205,7 +205,7 @@ public:
      */
     int usedMemory() const
     {
-        return pool_.usedMemory+pool_.wastedMemory+size_*sizeof(int);  // pool memory and vind array memory
+        return (int)(pool_.usedMemory+pool_.wastedMemory+size_*sizeof(int));  // pool memory and vind array memory
     }
 
     /**
@@ -241,11 +241,11 @@ protected:
         // Create a permutable array of indices to the input vectors.
         vind_.resize(size_);
         for (size_t i = 0; i < size_; i++) {
-            vind_[i] = i;
+            vind_[i] = (int)i;
         }
 
         computeBoundingBox(root_bbox_);
-        root_node_ = divideTree(0, size_, root_bbox_ );   // construct the tree
+        root_node_ = divideTree(0, (int)size_, root_bbox_ );   // construct the tree
 
         if (reorder_) {
             data_ = flann::Matrix<ElementType>(new ElementType[size_*veclen_], size_, veclen_);
@@ -456,7 +456,7 @@ private:
             ElementType span = bbox[i].high-bbox[i].low;
             if (span>max_span) {
                 max_span = span;
-                cutfeat = i;
+                cutfeat = (int)i;
                 cutval = (bbox[i].high+bbox[i].low)/2;
             }
         }
@@ -473,11 +473,11 @@ private:
             if (i==k) continue;
             ElementType span = bbox[i].high-bbox[i].low;
             if (span>max_span) {
-                computeMinMax(ind, count, i, min_elem, max_elem);
+                computeMinMax(ind, count, (int)i, min_elem, max_elem);
                 span = max_elem - min_elem;
                 if (span>max_span) {
                     max_span = span;
-                    cutfeat = i;
+                    cutfeat = (int)i;
                     cutval = (min_elem+max_elem)/2;
                 }
             }
@@ -574,11 +574,11 @@ private:
 
         for (size_t i = 0; i < veclen_; ++i) {
             if (vec[i] < root_bbox_[i].low) {
-                dists[i] = distance_.accum_dist(vec[i], root_bbox_[i].low, i);
+                dists[i] = distance_.accum_dist(vec[i], root_bbox_[i].low, (int)i);
                 distsq += dists[i];
             }
             if (vec[i] > root_bbox_[i].high) {
-                dists[i] = distance_.accum_dist(vec[i], root_bbox_[i].high, i);
+                dists[i] = distance_.accum_dist(vec[i], root_bbox_[i].high, (int)i);
                 distsq += dists[i];
             }
         }

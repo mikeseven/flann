@@ -79,7 +79,7 @@ inline int rand_int(int high = RAND_MAX, int low = 0)
 class RandomGenerator
 {
 public:
-    ptrdiff_t operator() (ptrdiff_t i) { return rand_int(i); }
+    ptrdiff_t operator() (ptrdiff_t i) { return rand_int((int)i); }
 };
 
 

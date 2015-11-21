@@ -196,7 +196,14 @@ public:
 
 inline void* operator new (std::size_t size, flann::PooledAllocator& allocator)
 {
-    return allocator.allocateMemory(size) ;
+  return allocator.allocateMemory((int)size);
 }
+
+#ifdef _MSC_VER
+inline void operator delete (void* ptr, flann::PooledAllocator& allocator) noexcept
+{
+  // this is just to squash C4291 warnings with Visual Studio 2013+
+}
+#endif
 
 #endif //FLANN_ALLOCATOR_H_

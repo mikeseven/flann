@@ -334,7 +334,7 @@ public:
     				size_t n = std::min(resultSet.size(), knn);
     				resultSet.copy(indices[i], dists[i], n, params.sorted);
     				indices_to_ids(indices[i], indices[i], n);
-    				count += n;
+    				count += (int)n;
     			}
     		}
     	}
@@ -349,7 +349,7 @@ public:
     				size_t n = std::min(resultSet.size(), knn);
     				resultSet.copy(indices[i], dists[i], n, params.sorted);
     				indices_to_ids(indices[i], indices[i], n);
-    				count += n;
+    				count += (int)n;
     			}
     		}
     	}
@@ -376,7 +376,7 @@ public:
 
     	for (size_t i=0;i<indices.rows;++i) {
     		for (size_t j=0;j<indices.cols;++j) {
-    			indices[i][j] = indices_[i][j];
+    			indices[i][j] = (int) indices_[i][j];
     		}
     	}
         delete[] indices_.ptr();
